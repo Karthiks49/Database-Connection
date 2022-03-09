@@ -22,7 +22,6 @@ namespace FreshersInfo
         private long mobileNumber;
         private string address;
         private string qualification;
-        public int id { get; set; }
 
         public CreateFresher()
         {
@@ -33,25 +32,28 @@ namespace FreshersInfo
         {
             if (ValidateChildren(ValidationConstraints.Enabled))
             {
-                //bool isFresherExist = UpdateFresher();
+                name = nameContainer.Text;
+                dateOfBirth = dateOfBirthContainer.Value;
+                mobileNumber = long.Parse(mobileNumberContainer.Text);
+                address = addressContainer.Text;
+                qualification = course.Text;
 
-               // if (!isFresherExist)
-               // {
-                    name = nameContainer.Text;
-                    dateOfBirth = dateOfBirthContainer.Value;
-                    mobileNumber = long.Parse(mobileNumberContainer.Text);
-                    address = addressContainer.Text;
-                    qualification = course.Text;
-
-                    var fresher = new FresherDetail(name, dateOfBirth.ToString("yyyy/MM/dd"), 
-                                                    mobileNumber, address, qualification);
+                var fresher = new FresherDetail(name, dateOfBirth.ToString("yyyy/MM/dd"), 
+                                                mobileNumber, address, qualification);
                     
-                    Clear();
+                Clear();
+                if (idContainer.Text == "")
+                {
                     fresherManagement.AddFresher(fresher);
                     MessageBox.Show($"{name} added successfully !!!");
                     name = null;
-                    save.Visible=true;
-               // }
+                    save.Visible = true;
+                } else
+                {
+                    fresher.id = int.Parse(idContainer.Text);
+                    fresherManagement.UpdateFresher(fresher);
+                    MessageBox.Show($"{name} updated successfully !!!");
+                }
             }
         }
 
@@ -64,27 +66,11 @@ namespace FreshersInfo
             course.Text = "";
         }
 
-        private void update_Click(object sender, EventArgs e)
-        {
-            name = nameContainer.Text;
-            dateOfBirth = dateOfBirthContainer.Value;
-            mobileNumber = long.Parse(mobileNumberContainer.Text);
-            address = addressContainer.Text;
-            qualification= course.Text;
-
-            FresherDetail fresher = new FresherDetail(name, dateOfBirth.ToString("yyyy/MM/dd"), mobileNumber, address, qualification);
-            fresher.id = id;
-            fresherManagement.UpdateFresher(fresher);
-            viewFresher.Display();
-            MessageBox.Show($"{name} updated successfully !!!");
-        }
-
         public void DeleteFresher(int id, string name)
         {
             fresherManagement.DeleteFresher(id);
             Clear();
             MessageBox.Show($"{name} deleted successfully !!!");
-            viewFresher.Display();
         }
 
         public void GetValues(FresherDetail fresher)
@@ -94,7 +80,7 @@ namespace FreshersInfo
             mobileNumberContainer.Text = fresher.mobileNumber.ToString();
             addressContainer.Text = fresher.address;
             course.Text = fresher.qualification;
-            
+            idContainer.Text = fresher.id.ToString();
         }
 
         private void nameContainer_Validating(object sender, CancelEventArgs e)
