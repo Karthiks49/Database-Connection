@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Fresher;
+using System;
 using System.Windows.Forms;
-using DAL;
-using Fresher;
+using DataAccess;
 using System.Data.SqlClient;
 using System.Data;
 using System.Configuration;
@@ -16,6 +10,7 @@ namespace FreshersInfo
 {
     public partial class ViewFresher : Form
     {
+        Freshermanagement freshermanagement = new Freshermanagement();
         public ViewFresher()
         {
             InitializeComponent();
@@ -24,7 +19,7 @@ namespace FreshersInfo
 
         public void Display()
         {
-            listView.DataSource = GetFreshers();
+            listView.DataSource = freshermanagement.GetFreshers();
         }
 
         private void update_Click(object sender, EventArgs e)
@@ -54,24 +49,6 @@ namespace FreshersInfo
                 createFresher.DeleteFresher(id, name);
                 Display();
             }
-        }
-
-        private DataTable GetFreshers()
-        {
-            DataTable freshersTable = new DataTable();
-
-            string connectionString = ConfigurationManager.ConnectionStrings["FreshersInfo.Properties.Settings.FresherManagementConnectionString"].ConnectionString;
-
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            SqlCommand command = new SqlCommand("select * from Freshers", connection);
-                
-            connection.Open();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
-            dataAdapter.Fill(freshersTable);
-            connection.Close();
-            
-            return freshersTable;
         }
     }
 }

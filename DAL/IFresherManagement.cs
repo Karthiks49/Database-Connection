@@ -1,13 +1,13 @@
 ﻿using Fresher;
-using System.Data.SqlClient;
+using System.Data;
 
-namespace DAL
+namespace DataAccess
 {
     interface IFresherManagement
     {
         void AddFresher(FresherDetail fresher);
 
-        SqlDataReader GetAllFreshers();
+        DataTable GetFreshers();
 
         void UpdateFresher(FresherDetail fresher);
 

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 using Fresher;
-using DAL;
+using DataAccess;
 
 namespace FreshersInfo
 {
@@ -41,7 +35,7 @@ namespace FreshersInfo
                 var fresher = new FresherDetail(name, dateOfBirth.ToString("yyyy/MM/dd"), 
                                                 mobileNumber, address, qualification);
                     
-                Clear();
+                
                 if (idContainer.Text == "")
                 {
                     fresherManagement.AddFresher(fresher);
@@ -55,6 +49,7 @@ namespace FreshersInfo
                     MessageBox.Show($"{name} updated successfully !!!");
                 }
             }
+            Clear();
         }
 
         public void Clear()
@@ -64,6 +59,7 @@ namespace FreshersInfo
             mobileNumberContainer.Clear();
             addressContainer.Clear();
             course.Text = "";
+            idContainer.Clear();
         }
 
         public void DeleteFresher(int id, string name)
@@ -134,7 +130,7 @@ namespace FreshersInfo
 
         private void CreateFresher_Load(object sender, EventArgs e)
         {
-            this.ActiveControl = nameContainer;
+            ActiveControl = nameContainer;
         }
 
         private void mobileNumberContainer_Validating(object sender, CancelEventArgs e)

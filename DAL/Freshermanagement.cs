@@ -1,91 +1,43 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using Fresher;
 
-namespace DAL
+namespace DataAccess
 {
     public class Freshermanagement : IFresherManagement
     {
-        private readonly DatabaseConnection dateBase = new DatabaseConnection();
+        DataAccessManager dataManager = new DataAccessManager();
         
         public void AddFresher(FresherDetail fresher)
         {
-            SqlConnection connection = dateBase.Connection();
-            try
-            {
-                SqlCommand command = new SqlCommand($"spCreateFresher '{fresher.name}', '{fresher.dateOfBirth}', {fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'", connection);
-                connection.Open();
-                command.ExecuteNonQuery();
-            } catch(Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+            string command = $"spCreateFresher '{fresher.name}', '{fresher.dateOfBirth}', " +
+                $"{fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'";             
+            dataManager.GetCommand(command);    
+        }
 
-            } finally
-            {
-                connection.Close();
-            }
+        public DataTable GetFreshers()
+        {
+            DataTable freshersTable = new DataTable();
+
+            string command = "spGetFreshers";
+            SqlDataAdapter dataAdapter = dataManager.GetDatas(command);
+            dataAdapter.Fill(freshersTable);
+
+            return freshersTable;
         }
 
         public void UpdateFresher(FresherDetail fresher)
         {
-            SqlConnection connection = dateBase.Connection();
-            try
-            {
-                SqlCommand command = new SqlCommand($"spUpdateFresher {fresher.id}, '{fresher.name}', '{fresher.dateOfBirth}', {fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'", connection);
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-
-            }
-            finally
-            {
-                connection.Close();
-            }
+            string command = $"spUpdateFresher {fresher.id}, '{fresher.name}', '{fresher.dateOfBirth}'," +
+                $" {fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'";
+            dataManager.GetCommand(command);
         }
 
         public void DeleteFresher(int id)
         {
-            SqlConnection connection = dateBase.Connection();
-            try
-            {
-                SqlCommand command = new SqlCommand($"spDeleteFresher {id}", connection);
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        public SqlDataReader GetAllFreshers()
-        {
-            SqlDataReader reader = null;
-            SqlConnection connection = dateBase.Connection();
-            try
-            {
-                SqlCommand command = new SqlCommand($"spGetFreshers", connection);
-                reader = command.ExecuteReader();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return reader;
+            string command = $"spDeleteFresher {id}";
+            dataManager.GetCommand(command);
         }
     }
 }
