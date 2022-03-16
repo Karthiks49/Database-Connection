@@ -7,14 +7,7 @@ namespace DataAccess
 {
     public class Freshermanagement : IFresherManagement
     {
-        DataAccessManager dataManager = new DataAccessManager();
-        
-        public void AddFresher(FresherDetail fresher)
-        {
-            string command = $"spCreateFresher '{fresher.name}', '{fresher.dateOfBirth}', " +
-                $"{fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'";             
-            dataManager.GetCommand(command);    
-        }
+        private readonly DataAccessManager dataManager = new DataAccessManager();
 
         public DataTable GetFreshers()
         {
@@ -27,11 +20,11 @@ namespace DataAccess
             return freshersTable;
         }
 
-        public void UpdateFresher(FresherDetail fresher)
+        public int SaveFreshers(FresherDetail fresher)
         {
-            string command = $"spUpdateFresher {fresher.id}, '{fresher.name}', '{fresher.dateOfBirth}'," +
+            string command = $"spSaveFreshers {fresher.id}, '{fresher.name}', '{fresher.dateOfBirth}'," +
                 $" {fresher.mobileNumber}, '{fresher.address}', '{fresher.qualification}'";
-            dataManager.GetCommand(command);
+            return dataManager.GetCommand(command);
         }
 
         public void DeleteFresher(int id)

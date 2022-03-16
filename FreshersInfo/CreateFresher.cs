@@ -10,7 +10,6 @@ namespace FreshersInfo
     public partial class CreateFresher : Form
     {
         private readonly Freshermanagement fresherManagement = new Freshermanagement();
-        private readonly ViewFresher viewFresher = new ViewFresher();
         private string name;
         private DateTime dateOfBirth;
         private long mobileNumber;
@@ -24,6 +23,7 @@ namespace FreshersInfo
 
         private void save_Click(object sender, EventArgs e)
         {
+            int affectedRow;
             if (ValidateChildren(ValidationConstraints.Enabled))
             {
                 name = nameContainer.Text;
@@ -34,22 +34,34 @@ namespace FreshersInfo
 
                 var fresher = new FresherDetail(name, dateOfBirth.ToString("yyyy/MM/dd"), 
                                                 mobileNumber, address, qualification);
-                    
+                fresher.id = 0;    
                 
                 if (idContainer.Text == "")
                 {
-                    fresherManagement.AddFresher(fresher);
-                    MessageBox.Show($"{name} added successfully !!!");
-                    name = null;
-                    save.Visible = true;
+                    if (1 == (affectedRow = fresherManagement.SaveFreshers(fresher)))
+                    {
+                        MessageBox.Show($"{name} added successfully !!!");
+                        MessageBox.Show("New fresher id: " + fresher.id.ToString());
+                        Clear();
+                    } else
+                    {
+                        MessageBox.Show("Mobile number already exist");
+                        mobileNumberContainer.Clear();
+                    }
                 } else
                 {
                     fresher.id = int.Parse(idContainer.Text);
-                    fresherManagement.UpdateFresher(fresher);
-                    MessageBox.Show($"{name} updated successfully !!!");
+                    if (1 == (affectedRow = fresherManagement.SaveFreshers(fresher)))
+                    {
+                        MessageBox.Show($"{name} updated successfully !!!");
+                        Clear();
+                    } else
+                    {
+                        MessageBox.Show("Mobile number already exist");
+                        mobileNumberContainer.Clear();
+                    }
                 }
             }
-            Clear();
         }
 
         public void Clear()
@@ -65,7 +77,6 @@ namespace FreshersInfo
         public void DeleteFresher(int id, string name)
         {
             fresherManagement.DeleteFresher(id);
-            Clear();
             MessageBox.Show($"{name} deleted successfully !!!");
         }
 

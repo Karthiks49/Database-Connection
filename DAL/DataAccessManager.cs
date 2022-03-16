@@ -9,13 +9,14 @@ namespace DataAccess
                                                                       " integrated security=SSPI");
         private SqlCommand sqlCommand;
 
-        public void GetCommand(string command)
+        public int GetCommand(string command)
         {
+            int affectedRow = 0;
             try
             {
                 sqlCommand = new SqlCommand(command, connection);
                 connection.Open();
-                sqlCommand.ExecuteNonQuery();
+                affectedRow = sqlCommand.ExecuteNonQuery();
             }
             catch (Exception e)
             {
@@ -25,6 +26,8 @@ namespace DataAccess
             {
                 connection.Close();
             }
+
+            return affectedRow;
         }
 
         public SqlDataAdapter GetDatas(string command)
